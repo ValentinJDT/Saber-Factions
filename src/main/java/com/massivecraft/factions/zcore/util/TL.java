@@ -870,6 +870,7 @@ public enum TL {
     COMMAND_ROSTER_DESCRIPTION("General roster usage for your faction"),
 
 
+    COMMAND_PROTECT_CANCEL("&c&l[!] &cYou can't do this in this area."),
 
     COMMAND_SAFEUNCLAIMALL_DESCRIPTION("Unclaim all safezone land"),
     COMMAND_SAFEUNCLAIMALL_UNCLAIMED("&c&l[!]&7 You unclaimed&c ALL&7 safe zone land."),

@@ -31,6 +31,8 @@ ACTION:
     WILDERNESS: '¡No se puede usar %1$s en la Zona Salvaje!'
     OTHER: '%1$s no te permite usar %2$s aquí!'
 COMMAND:
+  PROTECT:
+    CANCEL: "&c&l[!] &cYou can't do this in this area."
   USEAGE:
     TEMPLATE:
       COLOR: '&c'

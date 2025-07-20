@@ -20,6 +20,8 @@ root:
     REGION: FR
     STATE: complete
 COMMAND:
+  PROTECT:
+    CANCEL: "&c&l[!] &cVous ne pouvez pas effectuer ceci dans cette zone."
   ADMIN:
     NOTMEMBER: '%1$s<i> n''est pas un membre de votre faction.'
     NOTADMIN: <b>Vous n'êtes pas l'administrateur de la faction.

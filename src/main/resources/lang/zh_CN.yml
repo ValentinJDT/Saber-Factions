@@ -34,6 +34,8 @@ ACTION:
     WILDERNESS: 你不能在荒野使用 %1$s！
     OTHER: '%1$s 不允许你在这里 %2$s！'
 COMMAND:
+  PROTECT:
+    CANCEL: "&c&l[!] &cYou can't do this in this area."
   USEAGE:
     TEMPLATE:
       COLOR: '&b'

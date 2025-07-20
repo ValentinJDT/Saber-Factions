@@ -24,6 +24,7 @@ fupgrades:
     - "Chest"
     - "Members"
     - "Armor"
+    - "Claim-Protect"
   MainMenu:
     Rows: 5
     Title: '&8&l{faction}''s Upgrade Menu'
@@ -442,3 +443,23 @@ fupgrades:
           - ''
           - '&7&o(( Tip: &f&oleft-click&7&o to &c&oupgrade&7&o ))'
         Slot: 4
+    Claim-Protect:
+      Max-Level: 1
+      Commands:
+        - 'sethome'
+        - 'esethome'
+      Cost:
+        level-1: 60000
+      DisplayItem:
+        Name: '&6&lDisable specific commands'
+        Type: BED
+        Texture: ''
+        Lore:
+          - '&a&oCancel specific commands in claims for others factions.'
+          - '&7&oYour current level is &e&l&o{level}'
+          - '&f'
+          - '&c&lCost'
+          - '&4&l* &f60,000$'
+          - ''
+          - '&7&o(( Tip: &f&oleft-click&7&o to &c&oupgrade&7&o ))'
+        Slot: 14

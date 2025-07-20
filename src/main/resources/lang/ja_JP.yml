@@ -18,6 +18,8 @@ root:
     REGION: 日本
     STATE: 不全
 COMMAND:
+  PROTECT:
+    CANCEL: "&c&l[!] &cYou can't do this in this area."
   ADMIN:
     NOTMEMBER: '%s<i>は党派の員になっていませんよ・'
     NOTADMIN: <b>アドミンではありません・

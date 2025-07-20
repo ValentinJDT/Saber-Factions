@@ -20,6 +20,8 @@ root:
     REGION: US
     STATE: complete
 COMMAND:
+  PROTECT:
+    CANCEL: "&c&l[!] &cYou can't do this in this area."
   HELP:
     NEXTCREATE: <i>Impara come creare una fazione nella prossima pagina.
     HOME: '<i>E non dimenticarti di settare la home:'

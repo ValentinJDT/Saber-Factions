@@ -6,6 +6,7 @@ import com.massivecraft.factions.util.FastMath;
 import com.massivecraft.factions.util.Logger;
 import com.massivecraft.factions.zcore.frame.fupgrades.provider.stackers.RoseStackerProvider;
 import com.massivecraft.factions.zcore.frame.fupgrades.provider.stackers.WildStackerProvider;
+import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 import org.bukkit.CropState;
 import org.bukkit.Material;
@@ -18,9 +19,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.material.Crops;
 import org.bukkit.plugin.Plugin;
@@ -44,11 +48,11 @@ public class UpgradesListener implements Listener {
 
     public void init() {
         Plugin wildStacker = Bukkit.getPluginManager().getPlugin("WildStacker");
-        if (wildStacker != null) {
+        if(wildStacker != null) {
             this.wildStackerProvider = new WildStackerProvider();
         }
         Plugin roseStacker = Bukkit.getPluginManager().getPlugin("RoseStacker");
-        if (roseStacker != null) {
+        if(roseStacker != null) {
             this.roseStackerProvider = new RoseStackerProvider();
         }
     }
@@ -56,14 +60,14 @@ public class UpgradesListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         Entity killer = e.getEntity().getKiller();
-        if (!(killer instanceof Player)) return;
+        if(!(killer instanceof Player)) return;
 
         FLocation floc = FLocation.wrap(e.getEntity().getLocation());
         Faction faction = Board.getInstance().getFactionAt(floc);
-        if (!faction.isWilderness()) {
+        if(!faction.isWilderness()) {
             int level = faction.getUpgrade("EXP");
             double multiplier = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.EXP.EXP-Boost.level-" + level);
-            if (level != 0 && multiplier > 0.0) {
+            if(level != 0 && multiplier > 0.0) {
                 this.spawnMoreExp(e, multiplier);
             }
         }
@@ -78,9 +82,9 @@ public class UpgradesListener implements Listener {
     public void onSpawn(SpawnerSpawnEvent e) {
         FLocation floc = FLocation.wrap(e.getLocation());
         Faction factionAtLoc = Board.getInstance().getFactionAt(floc);
-        if (!factionAtLoc.isWilderness()) {
+        if(!factionAtLoc.isWilderness()) {
             int level = factionAtLoc.getUpgrade("Spawners");
-            if (level == 0) return;
+            if(level == 0) return;
             this.lowerSpawnerDelay(e, FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.Spawners.Spawner-Boost.level-" + level));
         }
     }
@@ -89,9 +93,9 @@ public class UpgradesListener implements Listener {
         CreatureSpawner spawner = e.getSpawner();
         int delay = spawner.getDelay() - FastMath.round(e.getSpawner().getDelay() * multiplier);
 
-        if (this.wildStackerProvider != null && !this.wildStackerProvider.setDelay(spawner, delay)) {
+        if(this.wildStackerProvider != null && !this.wildStackerProvider.setDelay(spawner, delay)) {
             Logger.print("Unable obtain WildStacker instance. Plugin found: " + (Bukkit.getPluginManager().getPlugin(this.wildStackerProvider.pluginName()) != null), Logger.PrefixType.FAILED);
-        } else if (this.roseStackerProvider != null && !this.roseStackerProvider.setDelay(spawner.getBlock(), delay)) {
+        } else if(this.roseStackerProvider != null && !this.roseStackerProvider.setDelay(spawner.getBlock(), delay)) {
             Logger.print("Missing expected spawner at: " + spawner.getX() + ", " + spawner.getY() + ", " + spawner.getZ(), Logger.PrefixType.FAILED);
         }
     }
@@ -100,18 +104,18 @@ public class UpgradesListener implements Listener {
     public void onCropGrow(BlockGrowEvent e) {
         FLocation floc = FLocation.wrap(e.getBlock().getLocation());
         Faction factionAtLoc = Board.getInstance().getFactionAt(floc);
-        if (!factionAtLoc.isWilderness()) {
+        if(!factionAtLoc.isWilderness()) {
             int level = factionAtLoc.getUpgrade("Crops");
             int chance = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getInt("fupgrades.MainMenu.Crops.Crop-Boost.level-" + level);
-            if (level == 0 || chance == 0) return;
+            if(level == 0 || chance == 0) return;
 
             int randomNum = ThreadLocalRandom.current().nextInt(1, 101);
-            if (randomNum <= chance) this.growCrop(e);
+            if(randomNum <= chance) this.growCrop(e);
         }
     }
 
     private void growCrop(BlockGrowEvent e) {
-        if (e.getBlock().getType().equals(XMaterial.WHEAT.parseMaterial())) {
+        if(e.getBlock().getType().equals(XMaterial.WHEAT.parseMaterial())) {
             e.setCancelled(true);
             Crops c = new Crops(CropState.RIPE);
             BlockState bs = e.getBlock().getState();
@@ -119,13 +123,13 @@ public class UpgradesListener implements Listener {
             bs.update();
         }
         Block below = e.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock();
-        if (below.getType() == XMaterial.SUGAR_CANE.parseMaterial()) {
+        if(below.getType() == XMaterial.SUGAR_CANE.parseMaterial()) {
             Block above = e.getBlock().getLocation().add(0.0D, 1.0D, 0.0D).getBlock();
-            if (above.getType() == Material.AIR && above.getLocation().add(0.0D, -2.0D, 0.0D).getBlock().getType() != Material.AIR)
+            if(above.getType() == Material.AIR && above.getLocation().add(0.0D, -2.0D, 0.0D).getBlock().getType() != Material.AIR)
                 above.setType(XMaterial.SUGAR_CANE.parseMaterial());
-        } else if (below.getType() == Material.CACTUS) {
+        } else if(below.getType() == Material.CACTUS) {
             Block above = e.getBlock().getLocation().add(0.0D, 1.0D, 0.0D).getBlock();
-            if (above.getType() == Material.AIR && above.getLocation().add(0.0D, -2.0D, 0.0D).getBlock().getType() != Material.AIR)
+            if(above.getType() == Material.AIR && above.getLocation().add(0.0D, -2.0D, 0.0D).getBlock().getType() != Material.AIR)
                 above.setType(Material.CACTUS);
         }
     }
@@ -135,13 +139,13 @@ public class UpgradesListener implements Listener {
         FLocation floc = FLocation.wrap(e.getToBlock().getLocation());
         Faction factionAtLoc = Board.getInstance().getFactionAt(floc);
 
-        if (!factionAtLoc.isWilderness()) {
+        if(!factionAtLoc.isWilderness()) {
             int level = factionAtLoc.getUpgrade("Redstone");
-            if (level != 0) {
-                if (level == 1) {
+            if(level != 0) {
+                if(level == 1) {
                     List<String> unbreakable = FactionsPlugin.getInstance().getConfig().getStringList("no-water-destroy.Item-List");
                     String block = e.getToBlock().getType().toString();
-                    if (unbreakable.contains(block)) {
+                    if(unbreakable.contains(block)) {
                         e.setCancelled(true);
                     }
                 }
@@ -151,16 +155,16 @@ public class UpgradesListener implements Listener {
 
     @EventHandler
     public void onPlayerFallUpgrade(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player) {
-            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+        if(e.getEntity() instanceof Player) {
+            if(e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 Player player = (Player) e.getEntity();
                 FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
 
-                if (fPlayer.getFaction().isNormal()) {
+                if(fPlayer.getFaction().isNormal()) {
                     int level = fPlayer.getFaction().getUpgrade("Fall-Damage");
 
                     FLocation fLocation = FLocation.wrap(player.getLocation());
-                    if (Board.getInstance().getFactionAt(fLocation) == fPlayer.getFaction() && level > 0) {
+                    if(Board.getInstance().getFactionAt(fLocation) == fPlayer.getFaction() && level > 0) {
                         e.setCancelled(true);
                     }
                 }
@@ -170,13 +174,54 @@ public class UpgradesListener implements Listener {
 
     @EventHandler
     public void onArmorDamage(PlayerItemDamageEvent e) {
-        if (FPlayers.getInstance().getByPlayer(e.getPlayer()) == null) return;
+        if(FPlayers.getInstance().getByPlayer(e.getPlayer()) == null) return;
 
-        if (e.getItem().getType().toString().contains("LEGGINGS") || e.getItem().getType().toString().contains("CHESTPLATE") || e.getItem().getType().toString().contains("HELMET") || e.getItem().getType().toString().contains("BOOTS")) {
+        if(e.getItem().getType().toString().contains("LEGGINGS") || e.getItem().getType().toString().contains("CHESTPLATE") || e.getItem().getType().toString().contains("HELMET") || e.getItem().getType().toString().contains("BOOTS")) {
             int lvl = FPlayers.getInstance().getByPlayer(e.getPlayer()).getFaction().getUpgrade("Armor");
             double drop = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.Armor.Armor-HP-Drop.level-" + lvl);
             int newDamage = FastMath.round(e.getDamage() - e.getDamage() * drop);
             e.setDamage(newDamage);
         }
     }
+
+    @EventHandler
+    public void onPlayerDamaged(EntityDamageByEntityEvent e) {
+        // if(!(e.getDamager() instanceof Player)) return;
+        if(!(e.getEntity() instanceof Player)) return;
+
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer((Player) e.getEntity());
+
+        if(fPlayer == null) return;
+
+        Faction factionAtLoc = Board.getInstance().getFactionAt(FLocation.wrap(fPlayer.getPlayer().getLocation()));
+        if(!factionAtLoc.isWilderness() && factionAtLoc.getId().equals(fPlayer.getFactionId())) {
+            int lvl = fPlayer.getFaction().getUpgrade("DamageReduct");
+            double drop = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.DamageReduct.DamageReductPercent.level-" + lvl);
+            long newDamage = Math.round(e.getDamage() * ((100-drop)/100));
+            e.setDamage(newDamage);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerCommandInEnemyClaim(PlayerCommandPreprocessEvent e) {
+        List<String> cmds = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getStringList("fupgrades.MainMenu.Claim-Protect.Commands");
+
+        if(cmds.stream().noneMatch(cmd -> e.getMessage().toLowerCase().startsWith("/" + cmd.toLowerCase()))) return;
+
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(e.getPlayer());
+        if(fPlayer == null || fPlayer.isAdminBypassing()) return;
+
+        Faction factionAtLoc = Board.getInstance().getFactionAt(FLocation.wrap(e.getPlayer().getLocation()));
+
+        if(!factionAtLoc.isWilderness() && !factionAtLoc.getId().equals(fPlayer.getFactionId())) {
+            int lvl = factionAtLoc.getUpgrade("Claim-Protect");
+
+            if(lvl > 0) {
+                fPlayer.msg(TL.COMMAND_PROTECT_CANCEL);
+                e.setCancelled(true);
+            }
+        }
+    }
+
+
 }
