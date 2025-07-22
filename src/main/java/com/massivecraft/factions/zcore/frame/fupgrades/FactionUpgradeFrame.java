@@ -100,7 +100,6 @@ public class FactionUpgradeFrame extends SaberGUI {
         }
 
         fme.getPlayer().closeInventory();
-        fme.msg(TL.GENERIC_NOTENOUGHMONEY);
     }
 
     private void handleTransaction(FPlayer fme, String upgradeId) {
