@@ -22,6 +22,7 @@ import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.frame.FactionGUI;
 import com.massivecraft.factions.zcore.persist.MemoryFPlayer;
 import com.massivecraft.factions.zcore.persist.MemoryFPlayers;
+import com.massivecraft.factions.zcore.util.ReflectUtil;
 import com.massivecraft.factions.zcore.util.TL;
 import com.massivecraft.factions.zcore.util.TextUtil;
 import org.bukkit.*;
@@ -602,8 +603,10 @@ public class FactionsPlayerListener implements Listener {
         Player player = event.getPlayer();
         if (block == null)
             return;
+        // Workaround for modded items
         if (event.getItem() != null) {
-            type = XMaterial.matchXMaterial(event.getItem().getType().toString()).get().parseMaterial();
+            Optional<XMaterial> optMat = XMaterial.matchXMaterial(event.getItem().getType().toString());
+            type = optMat.map(XMaterial::parseMaterial).orElse(null);
         } else {
             type = null;
         }
@@ -629,7 +632,8 @@ public class FactionsPlayerListener implements Listener {
     @EventHandler
     public void onInventorySee(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
-        if (!e.getView().getTitle().endsWith("'s Player Inventory")) return;
+        String title = ReflectUtil.execute(e, "getView().getTitle()");
+        if (!title.endsWith("'s Player Inventory")) return;
         e.setCancelled(true);
     }
 
