@@ -2,6 +2,7 @@ package com.massivecraft.factions.listeners;
 
 import com.massivecraft.factions.util.SaberGUI;
 import com.massivecraft.factions.util.serializable.InventoryItem;
+import com.massivecraft.factions.zcore.util.ReflectUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,9 +29,9 @@ public class SaberGUIListener implements Listener {
                 return;
             }
             active.onUnknownItemClick(event);
-        } else if (SaberGUI.allGUINames.contains(event.getView().getTitle())) {
+        } else if (SaberGUI.allGUINames.contains(ReflectUtil.execute(event, "getView().getTitle()"))) {
             event.setCancelled(true);
-            Bukkit.getLogger().info("Cancelling Inventory CLICKED: " + event.getView().getTitle() + " DUE TO IT NOT BEING TRACKED FOR " + event.getWhoClicked().getName() + ", MASSIVE LAG??");
+            Bukkit.getLogger().info("Cancelling Inventory CLICKED: " + ReflectUtil.execute(event, "getView().getTitle()") + " DUE TO IT NOT BEING TRACKED FOR " + event.getWhoClicked().getName() + ", MASSIVE LAG??");
         }
     }
 

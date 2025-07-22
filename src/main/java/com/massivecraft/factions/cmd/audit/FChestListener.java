@@ -9,6 +9,7 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.util.CC;
+import com.massivecraft.factions.zcore.util.ReflectUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -60,7 +61,7 @@ public class FChestListener implements Listener {
         }
 
         Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null || !event.getView().getTitle().equalsIgnoreCase(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title")))) {
+        if (clickedInventory == null || !CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title")).equalsIgnoreCase(ReflectUtil.execute(event, "getView().getTitle()"))) {
             return;
         }
 
@@ -79,7 +80,7 @@ public class FChestListener implements Listener {
         Faction faction = fPlayer.getFaction();
         Inventory factionChestInventory = faction.getChestInventory();
 
-        if (event.getView().getTitle().equalsIgnoreCase(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title"))) && !event.getClick().isShiftClick()) {
+        if (CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title")).equalsIgnoreCase(ReflectUtil.execute(event, "getView().getTitle()")) && !event.getClick().isShiftClick()) {
             if (currentItemType != Material.AIR) {
                 if ((factionChestInventory == null || !factionChestInventory.contains(currentItem)) && clickedInventory == factionChestInventory) {
                     event.setCancelled(true);
