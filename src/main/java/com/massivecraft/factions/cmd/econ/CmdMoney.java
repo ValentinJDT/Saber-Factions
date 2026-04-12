@@ -2,9 +2,8 @@ package com.massivecraft.factions.cmd.econ;
 
 import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.cmd.Aliases;
-import com.massivecraft.factions.cmd.CommandContext;
-import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.cmd.*;
+import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.zcore.util.TL;
 import com.massivecraft.factions.zcore.util.TextUtil;
 
@@ -36,6 +35,13 @@ public class CmdMoney extends FCommand {
         this.addSubCommand(this.cmdMoneyTransferFf);
         this.addSubCommand(this.cmdMoneyTransferFp);
         this.addSubCommand(this.cmdMoneyTransferPf);
+
+        this.setRequirements(new CommandRequirements.Builder(Permission.MONEY_HELP)
+                .playerOnly()
+                .memberOnly()
+                .brigadier(CmdAnnounce.AnnounceBrigadier.class)
+                .noErrorOnManyArgs()
+                .build());
     }
 
     @Override
