@@ -230,6 +230,8 @@ permissions:
     description: give or revoke moderator rights
   factions.mod.any:
     description: give or revoke moderator rights for any player in any faction
+  factions.money.help:
+    description: auto help for money
   factions.money.balance:
     description: show your factions current money balance
   factions.money.balance.any:
@@ -248,6 +250,7 @@ permissions:
     description: transfer money from player to faction
   factions.money.kit.standard:
     children:
+      factions.money.help: true
       factions.money.balance: true
       factions.money.balance.any: true
       factions.money.deposit: true
@@ -257,6 +260,7 @@ permissions:
       factions.money.p2f: true
   factions.money.*:
     children:
+      factions.money.help: true
       factions.money.kit.standard: true
       factions.money.balance.any: true
       factions.money.deposit: true
